@@ -1585,8 +1585,14 @@ namespace ZitiDesktopEdge {
 
                         IdList.Children.Add(idItem);
 
-                        if (IdentityMenu.Visibility == Visibility.Visible) {
-                            if (id.Identifier == IdentityMenu.Identity.Identifier) IdentityMenu.Identity = id;
+                        if (IdentityMenu.Visibility == Visibility.Visible && IdentityMenu.Identity != null) {
+                            if (id.Identifier == IdentityMenu.Identity.Identifier) {
+                                // Only reassign if it's a different reference - this prevents needlessly re-triggering the identity setter and UI refreshes
+                                // in IdentityDetails.xaml.cs
+                                if (!ReferenceEquals(IdentityMenu.Identity, id)) {
+                                    IdentityMenu.Identity = id;
+                                }
+                            }
                         }
                     }
                     DoubleAnimation animation = new DoubleAnimation((double)(ids.Length * 64), TimeSpan.FromSeconds(.2));
